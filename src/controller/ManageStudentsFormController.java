@@ -3,8 +3,6 @@ package controller;
 import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import model.StudentDTO;
 import util.CrudUtil;
 
@@ -13,23 +11,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ManageStudentsFormController {
-    public TableView<StudentDTO> tblStudent;
-    public TableColumn colID;
-    public TableColumn colName;
-    public TableColumn colEmail;
-    public TableColumn colContact;
-    public TableColumn colAddress;
-    public TableColumn colNIC;
     public JFXTextField txtID;
     public JFXTextField txtName;
     public JFXTextField txtEmail;
     public JFXTextField txtContact;
     public JFXTextField txtAddress;
     public JFXTextField txtNIC;
-
-    public void initialize() {
-
-    }
 
     public void txtSearchStudent(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
         ArrayList<StudentDTO> list = new ArrayList<>();
@@ -50,7 +37,7 @@ public class ManageStudentsFormController {
             //set student's details to textfields
             setData(list);
         }else {
-            //clear textfields
+            //refresh textfields
             clearTextFields();
 
             //error alert
@@ -92,9 +79,33 @@ public class ManageStudentsFormController {
         }
     }
 
-    public void btnUpdateStudent(ActionEvent actionEvent) {
+    public void btnUpdateStudent(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
+        StudentDTO studentDTO = new StudentDTO(
+                txtID.getText(),txtName.getText(),txtEmail.getText(),
+                txtContact.getText(),txtAddress.getText(),txtNIC.getText()
+        );
+
+        //update student
+        if(CrudUtil.execute("UPDATE Student SET student_name = ?, email = ?, contact = ?, address = ?, nic = ? WHERE student_id = ?",
+                studentDTO.getStudentName(),studentDTO.getEmail(),
+                studentDTO.getContact(),studentDTO.getAddress(),
+                studentDTO.getNic(),studentDTO.getStudentID())){
+            //confirmation alert
+            new Alert(Alert.AlertType.CONFIRMATION,"Student details updated.").show();
+        }else{
+            new Alert(Alert.AlertType.ERROR,"Something went wrong!").show();
+        }
     }
 
-    public void btnDeleteStudent(ActionEvent actionEvent) {
+    public void btnDeleteStudent(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
+        if(CrudUtil.execute("DELETE FROM Student WHERE student_id = ?",txtID.getText())){
+            //confirmation alert
+            new Alert(Alert.AlertType.CONFIRMATION,"Student deleted.").show();
+
+            //refresh textfields
+            clearTextFields();
+        }else{
+            new Alert(Alert.AlertType.ERROR,"Something went wrong!").show();
+        }
     }
 }
