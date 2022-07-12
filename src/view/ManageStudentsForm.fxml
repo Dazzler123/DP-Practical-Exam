@@ -28,5 +28,10 @@
             <Font name="System Bold Italic" size="15.0" />
          </font>
       </Label>
+      <Label layoutX="901.0" layoutY="18.0" prefHeight="50.0" prefWidth="67.0" text="IJSE" textFill="RED">
+         <font>
+            <Font name="System Bold Italic" size="34.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
